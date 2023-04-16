@@ -9,13 +9,13 @@ char *Descripcion;
 int Duracion; // entre 10 – 100
 } typedef Tarea;
 
-
+Tarea * BuscarTareaPorId(Tarea **x, int y, int n);
 
 int main()
 {
-    int n;
+    int n, y;
     char buff[100], r;
-    Tarea **tareasPendientes, **tareasRealizadas;
+    Tarea **tareasPendientes, **tareasRealizadas, *tareaid;
 
     printf("ingrese la cantidad de tareas a realizar \n");
     scanf("%d", &n);
@@ -45,6 +45,8 @@ int main()
     }
     printf("finalizo la carga de tareas \n");
     printf("========================================\n");
+    getchar();
+    system("cls");
     for (int i = 0; i < n; i++)
     {
         printf("la tarea %d fue realizada? (S/N) \n", (i+1));
@@ -57,7 +59,11 @@ int main()
             printf("\n");
         }
     }
+    getchar();
+    system("cls");
+
     printf("=====listado de tareas pendientes===== \n");
+    printf("\n");
     for (int i = 0; i < n; i++)
     {
         if (tareasPendientes[i]!=NULL)
@@ -72,6 +78,7 @@ int main()
     }
     
     printf("=====listado de tareas realizadas===== \n");
+    printf("\n");
     for (int i = 0; i < n; i++)
     {
         if (tareasRealizadas[i]!=NULL)
@@ -82,6 +89,42 @@ int main()
             printf("Duracion: %d \n", tareasRealizadas[i]->Duracion);
             printf("\n");
         }
+        
+    }
+    printf("desea realizar alguna busqueda? (S/N) \n");
+    scanf("%c", &r);
+    fflush(stdin);
+    if (r=='s'||r=='S')
+    {
+        printf("ingrese el id de la tarea que esta buscando \n");
+        scanf("%d", &y);
+        fflush(stdin);
+        tareaid=BuscarTareaPorId(tareasPendientes, y, n);
+        if (tareaid!=NULL)
+        {
+            printf("la tarea fue encontrada \n");
+            printf("Tarea %d: \n", tareaid->TareaID);
+            printf("descripcion: ");
+            puts(tareaid->Descripcion);
+            printf("duracion: %d \n",tareaid->Duracion);
+        }else
+        {
+            tareaid=BuscarTareaPorId(tareasRealizadas, y, n);
+            if (tareaid!=NULL)
+            {
+                printf("la tarea fue encontrada \n");
+                printf("Tarea %d: \n", tareaid->TareaID);
+                printf("descripcion: ");
+                puts(tareaid->Descripcion);
+                printf("duracion: %d \n",tareaid->Duracion);
+            }else
+            {
+                printf("la tarea no fue encontrada");
+            }
+            
+            
+        }
+        
         
     }
     
@@ -103,4 +146,20 @@ int main()
     free(tareasRealizadas);
     getchar();
     return 0;
+}
+
+Tarea * BuscarTareaPorId(Tarea **x, int y, int n){
+    int aux;
+    for (int i = 0; i < n; i++)
+    {
+        if (x[i]!=NULL)
+        {
+            aux=x[i]->TareaID;
+            if (aux==y)
+            {
+            return x[i];
+            }
+        }
+    }
+    return NULL;
 }
