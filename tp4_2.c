@@ -91,6 +91,9 @@ int main()
         }
         
     }
+    getchar();
+    system("cls");
+    
     printf("desea realizar alguna busqueda? (S/N) \n");
     scanf("%c", &r);
     fflush(stdin);
