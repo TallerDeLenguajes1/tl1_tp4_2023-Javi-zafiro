@@ -10,6 +10,7 @@ int Duracion; // entre 10 – 100
 } typedef Tarea;
 
 Tarea * BuscarTareaPorId(Tarea **x, int y, int n);
+Tarea * BuscarTareaPorPalabra(Tarea **x, char *y, int n);
 
 int main()
 {
@@ -56,8 +57,8 @@ int main()
         {
             tareasRealizadas[i]=tareasPendientes[i];
             tareasPendientes[i]=NULL;
-            printf("\n");
         }
+        printf("\n");
     }
     getchar();
     system("cls");
@@ -93,26 +94,22 @@ int main()
     }
     getchar();
     system("cls");
-    
+
     printf("desea realizar alguna busqueda? (S/N) \n");
     scanf("%c", &r);
     fflush(stdin);
     if (r=='s'||r=='S')
     {
-        printf("ingrese el id de la tarea que esta buscando \n");
-        scanf("%d", &y);
+        printf("desea realizar una busqueda por id(I) o palabras(P)? \n");
+        scanf("%c", &r);
         fflush(stdin);
-        tareaid=BuscarTareaPorId(tareasPendientes, y, n);
-        if (tareaid!=NULL)
+        switch (r)
         {
-            printf("la tarea fue encontrada \n");
-            printf("Tarea %d: \n", tareaid->TareaID);
-            printf("descripcion: ");
-            puts(tareaid->Descripcion);
-            printf("duracion: %d \n",tareaid->Duracion);
-        }else
-        {
-            tareaid=BuscarTareaPorId(tareasRealizadas, y, n);
+        case 'i':
+            printf("ingrese el id de la tarea que esta buscando \n");
+            scanf("%d", &y);
+            fflush(stdin);
+            tareaid=BuscarTareaPorId(tareasPendientes, y, n);
             if (tareaid!=NULL)
             {
                 printf("la tarea fue encontrada \n");
@@ -122,9 +119,51 @@ int main()
                 printf("duracion: %d \n",tareaid->Duracion);
             }else
             {
-                printf("la tarea no fue encontrada");
+                tareaid=BuscarTareaPorId(tareasRealizadas, y, n);
+                if (tareaid!=NULL)
+                {
+                    printf("la tarea fue encontrada \n");
+                    printf("Tarea %d: \n", tareaid->TareaID);
+                    printf("descripcion: ");
+                    puts(tareaid->Descripcion);
+                    printf("duracion: %d \n",tareaid->Duracion);
+                }else
+                {
+                    printf("la tarea no fue encontrada");
+                }
             }
-            
+            break;
+        case 'p':
+            printf("ingrese una palabra para buscar cocincidencias en las tareas \n");
+            gets(buff);
+            fflush(stdin);
+            tareaid=BuscarTareaPorPalabra(tareasPendientes, buff, n);
+            if (tareaid!=NULL)
+            {
+                printf("la tarea fue encontrada \n");
+                printf("Tarea %d: \n", tareaid->TareaID);
+                printf("descripcion: ");
+                puts(tareaid->Descripcion);
+                printf("duracion: %d \n",tareaid->Duracion);
+            }else
+            {
+                tareaid=BuscarTareaPorPalabra(tareasRealizadas, buff, n);
+                if (tareaid!=NULL)
+                {
+                    printf("la tarea fue encontrada \n");
+                    printf("Tarea %d: \n", tareaid->TareaID);
+                    printf("descripcion: ");
+                    puts(tareaid->Descripcion);
+                    printf("duracion: %d \n",tareaid->Duracion);
+                }else
+                {
+                    printf("la tarea no fue encontrada");
+                }
+            }
+            break;
+        default:
+            printf("respuesta incorrecta, aprenda a leer \n");
+            break;
             
         }
         
@@ -162,6 +201,23 @@ Tarea * BuscarTareaPorId(Tarea **x, int y, int n){
             {
             return x[i];
             }
+        }
+    }
+    return NULL;
+}
+
+Tarea * BuscarTareaPorPalabra(Tarea **x, char *y, int n){
+    char *aux;
+    for (int i = 0; i < n; i++)
+    {
+        if (x[i]!=NULL)
+        {
+            aux=x[i]->Descripcion;
+            if (strstr(aux, y) != NULL)
+            {
+                return x[i];
+            }
+            
         }
     }
     return NULL;
