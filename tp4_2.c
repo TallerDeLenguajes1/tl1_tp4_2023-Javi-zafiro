@@ -14,14 +14,14 @@ struct Nodo{
     struct Nodo *Siguiente;
 } typedef Nodo;
 
-//Tarea * BuscarTareaPorId(Tarea **x, int y, int n);
+Nodo * BuscarTareaPorId(Nodo *lista, int y);
 //Tarea * BuscarTareaPorPalabra(Tarea **x, char *y, int n);
 
 int main()
 {
-    int n, y, i=0;
+    int y, i=0;
     char buff[100], r;
-    Nodo *listaPendientes, *listaRealizadas, *nuevo, *aux, *aux2;
+    Nodo *listaPendientes, *listaRealizadas, *nuevo, *aux, *aux2, *encontrado;
     listaPendientes=NULL;
     listaRealizadas=NULL;
 
@@ -92,14 +92,23 @@ int main()
                 aux2=aux;
                 aux=aux->Siguiente;
                 aux2->Siguiente=NULL;
-                listaPendientes=aux;
                 listaRealizadas=aux2;
+                if (listaPendientes==aux2)
+                {
+                    listaPendientes=aux;
+                }
+                
+                
             }else
             {
                 aux2->Siguiente=aux;
                 aux=aux->Siguiente;
                 aux2=aux2->Siguiente;
                 aux2->Siguiente=NULL;
+                if (listaPendientes==aux2)
+                {
+                    listaPendientes=aux;
+                }
             }
             
             
@@ -179,32 +188,34 @@ int main()
         switch (r)
         {
         case 'i':
+        */
             printf("ingrese el id de la tarea que esta buscando \n");
             scanf("%d", &y);
             fflush(stdin);
-            tareaid=BuscarTareaPorId(tareasPendientes, y, n);
-            if (tareaid!=NULL)
+            encontrado=BuscarTareaPorId(listaPendientes, y);
+            if (encontrado!=NULL)
             {
                 printf("la tarea fue encontrada \n");
-                printf("Tarea %d: \n", tareaid->TareaID);
+                printf("Tarea %d: \n", encontrado->T.TareaID);
                 printf("descripcion: ");
-                puts(tareaid->Descripcion);
-                printf("duracion: %d \n",tareaid->Duracion);
+                puts(encontrado->T.Descripcion);
+                printf("duracion: %d \n",encontrado->T.Duracion);
             }else
             {
-                tareaid=BuscarTareaPorId(tareasRealizadas, y, n);
-                if (tareaid!=NULL)
+                encontrado=BuscarTareaPorId(listaRealizadas, y);
+                if (encontrado!=NULL)
                 {
                     printf("la tarea fue encontrada \n");
-                    printf("Tarea %d: \n", tareaid->TareaID);
+                    printf("Tarea %d: \n", encontrado->T.TareaID);
                     printf("descripcion: ");
-                    puts(tareaid->Descripcion);
-                    printf("duracion: %d \n",tareaid->Duracion);
+                    puts(encontrado->T.Descripcion);
+                    printf("duracion: %d \n",encontrado->T.Duracion);
                 }else
                 {
                     printf("la tarea no fue encontrada");
                 }
             }
+            /*
             break;
         case 'p':
             printf("ingrese una palabra para buscar cocincidencias en las tareas \n");
@@ -261,23 +272,23 @@ int main()
     return 0;
 }
 
-/*
-Tarea * BuscarTareaPorId(Tarea **x, int y, int n){
-    int aux;
-    for (int i = 0; i < n; i++)
+
+Nodo * BuscarTareaPorId(Nodo *lista, int y){
+    Nodo *aux;
+    aux=lista;
+    while (aux!=NULL)
     {
-        if (x[i]!=NULL)
+        if (aux->T.TareaID==y)
         {
-            aux=x[i]->TareaID;
-            if (aux==y)
-            {
-            return x[i];
-            }
+            return aux;
         }
+        aux=aux->Siguiente;
     }
+    
+    
     return NULL;
 }
-
+/*
 Tarea * BuscarTareaPorPalabra(Tarea **x, char *y, int n){
     char *aux;
     for (int i = 0; i < n; i++)
