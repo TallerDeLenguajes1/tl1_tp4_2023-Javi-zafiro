@@ -16,14 +16,17 @@ struct Nodo{
 
 Nodo * BuscarTareaPorId(Nodo *lista, int y);
 Nodo * BuscarTareaPorPalabra(Nodo *lista, char *y);
+void Eliminar(Nodo *x);
+void MostrarDatos(Nodo *lista);
 
 int main()
 {
     int y, i=0;
     char buff[100], r;
-    Nodo *listaPendientes, *listaRealizadas, *nuevo, *aux, *aux2, *encontrado;
+    Nodo *listaPendientes, *listaRealizadas, *listaEnProgreso, *nuevo, *aux, *aux2, *encontrado;
     listaPendientes=NULL;
     listaRealizadas=NULL;
+    listaEnProgreso=NULL;
 
     srand(time(NULL));
 
@@ -61,6 +64,46 @@ int main()
     printf("========================================\n");
     getchar();
     system("cls");
+    printf("=====listado de tareas pendientes===== \n");
+    printf("\n");
+    aux=listaPendientes;
+    while (aux!=NULL)
+    {
+        printf("Tarea %d \n", aux->T.TareaID);
+        printf("Descripcion: ");
+        puts(aux->T.Descripcion);
+        printf("Duracion: %d \n", aux->T.Duracion);
+        printf("\n");
+        aux=aux->Siguiente;
+    }
+    
+    printf("=====listado de tareas realizadas===== \n");
+    printf("\n");
+    aux2=listaRealizadas;
+    while (aux2!=NULL)
+    {
+        printf("Tarea %d \n", aux2->T.TareaID);
+        printf("Descripcion: ");
+        puts(aux2->T.Descripcion);
+        printf("Duracion: %d \n", aux2->T.Duracion);
+        printf("\n");
+        aux2=aux2->Siguiente;
+    }
+    printf("=====listado de tareas en progreso===== \n");
+    printf("\n");
+    aux2=listaEnProgreso;
+    while (aux2!=NULL)
+    {
+        printf("Tarea %d \n", aux2->T.TareaID);
+        printf("Descripcion: ");
+        puts(aux2->T.Descripcion);
+        printf("Duracion: %d \n", aux2->T.Duracion);
+        printf("\n");
+        aux2=aux2->Siguiente;
+    }
+    getchar();
+    system("cls");
+    /*
     aux=listaPendientes;
     aux2=listaRealizadas;
     listaPendientes=NULL;
@@ -222,6 +265,7 @@ int main()
         
         
     }
+    */
     aux=listaPendientes;
     while (aux!=NULL)
     {
@@ -236,10 +280,36 @@ int main()
         free(aux);
         aux=aux2;
     }
+    
     getchar();
     return 0;
 }
 
+void Eliminar(Nodo *x){
+    free(x);
+}
+
+void MostrarDatos(Nodo *lista){
+    int suma=0, cantidad=0;
+    Nodo *aux;
+    aux=lista;
+    while (aux!=NULL)
+    {
+        suma=suma+aux->T.Duracion;
+        cantidad++;
+        aux=aux->Siguiente;
+    }
+    if (cantidad!=0 || suma!=0)
+    {
+        printf("la cantidad de tareas es: %d \n", cantidad);
+        printf("el tiempo asociado a esta lista es: %d \n", suma);
+    }else
+    {
+        printf("la lista no tiene tareas \n");
+    }
+    
+    
+}
 
 Nodo * BuscarTareaPorId(Nodo *lista, int y){
     Nodo *aux;
