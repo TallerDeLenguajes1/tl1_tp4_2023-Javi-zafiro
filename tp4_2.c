@@ -15,7 +15,7 @@ struct Nodo{
 } typedef Nodo;
 
 Nodo * BuscarTareaPorId(Nodo *lista, int y);
-//Tarea * BuscarTareaPorPalabra(Tarea **x, char *y, int n);
+Nodo * BuscarTareaPorPalabra(Nodo *lista, char *y);
 
 int main()
 {
@@ -57,24 +57,13 @@ int main()
         
     } while (r=='s' || r=='S');
     
-    /*for (int i = 0; i < n; i++)
-    {
-        printf("Tarea %d \n", (i+1));
-        tareasPendientes[i]=(Tarea *)malloc(sizeof(Tarea));
-        tareasPendientes[i]->TareaID=i+1;
-        printf("describa brevemente la tarea (maximo 99 digitos) \n");
-        gets(buff);
-        tareasPendientes[i]->Descripcion=(char *)malloc((strlen(buff)+1)*sizeof(char));
-        strcpy(tareasPendientes[i]->Descripcion, buff);
-        tareasPendientes[i]->Duracion=10+rand()%90;
-        printf("\n");
-    }*/
     printf("finalizo la carga de tareas \n");
     printf("========================================\n");
     getchar();
     system("cls");
     aux=listaPendientes;
     aux2=listaRealizadas;
+    listaPendientes=NULL;
     while (aux!=NULL)
     {
         i=i+1;
@@ -93,11 +82,6 @@ int main()
                 aux=aux->Siguiente;
                 aux2->Siguiente=NULL;
                 listaRealizadas=aux2;
-                if (listaPendientes==aux2)
-                {
-                    listaPendientes=aux;
-                }
-                
                 
             }else
             {
@@ -105,16 +89,27 @@ int main()
                 aux=aux->Siguiente;
                 aux2=aux2->Siguiente;
                 aux2->Siguiente=NULL;
-                if (listaPendientes==aux2)
-                {
-                    listaPendientes=aux;
-                }
             }
             
             
         }else
         {
-            aux=aux->Siguiente;
+            if (listaPendientes==NULL)
+            {
+                nuevo=aux->Siguiente;
+                listaPendientes=aux;
+                listaPendientes->Siguiente=NULL;
+                aux=nuevo;
+                nuevo=listaPendientes;
+            }else
+            {
+                nuevo->Siguiente=aux;
+                aux=aux->Siguiente;
+                nuevo=nuevo->Siguiente;
+                nuevo->Siguiente=NULL;
+            }
+            
+            
         }
         
         
@@ -136,20 +131,6 @@ int main()
         aux=aux->Siguiente;
     }
     
-
-    /*for (int i = 0; i < n; i++)
-    {
-        if (tareasPendientes[i]!=NULL)
-        {
-            printf("Tarea %d \n", tareasPendientes[i]->TareaID);
-            printf("Descripcion: ");
-            puts(tareasPendientes[i]->Descripcion);
-            printf("Duracion: %d \n", tareasPendientes[i]->Duracion);
-            printf("\n");
-        }
-        
-    }*/
-    
     printf("=====listado de tareas realizadas===== \n");
     printf("\n");
     aux2=listaRealizadas;
@@ -162,21 +143,9 @@ int main()
         printf("\n");
         aux2=aux2->Siguiente;
     }
-    /*for (int i = 0; i < n; i++)
-    {
-        if (tareasRealizadas[i]!=NULL)
-        {
-            printf("Tarea %d \n", tareasRealizadas[i]->TareaID);
-            printf("Descripcion: ");
-            puts(tareasRealizadas[i]->Descripcion);
-            printf("Duracion: %d \n", tareasRealizadas[i]->Duracion);
-            printf("\n");
-        }
-        
-    }*/
     getchar();
     system("cls");
-    /*
+    
     printf("desea realizar alguna busqueda? (S/N) \n");
     scanf("%c", &r);
     fflush(stdin);
@@ -188,7 +157,7 @@ int main()
         switch (r)
         {
         case 'i':
-        */
+        
             printf("ingrese el id de la tarea que esta buscando \n");
             scanf("%d", &y);
             fflush(stdin);
@@ -215,30 +184,30 @@ int main()
                     printf("la tarea no fue encontrada");
                 }
             }
-            /*
+            
             break;
         case 'p':
             printf("ingrese una palabra para buscar cocincidencias en las tareas \n");
             gets(buff);
             fflush(stdin);
-            tareaid=BuscarTareaPorPalabra(tareasPendientes, buff, n);
-            if (tareaid!=NULL)
+            encontrado=BuscarTareaPorPalabra(listaPendientes, buff);
+            if (encontrado!=NULL)
             {
                 printf("la tarea fue encontrada \n");
-                printf("Tarea %d: \n", tareaid->TareaID);
+                printf("Tarea %d: \n", encontrado->T.TareaID);
                 printf("descripcion: ");
-                puts(tareaid->Descripcion);
-                printf("duracion: %d \n",tareaid->Duracion);
+                puts(encontrado->T.Descripcion);
+                printf("duracion: %d \n",encontrado->T.Duracion);
             }else
             {
-                tareaid=BuscarTareaPorPalabra(tareasRealizadas, buff, n);
-                if (tareaid!=NULL)
+                encontrado=BuscarTareaPorPalabra(listaRealizadas, buff);
+                if (encontrado!=NULL)
                 {
                     printf("la tarea fue encontrada \n");
-                    printf("Tarea %d: \n", tareaid->TareaID);
+                    printf("Tarea %d: \n", encontrado->T.TareaID);
                     printf("descripcion: ");
-                    puts(tareaid->Descripcion);
-                    printf("duracion: %d \n",tareaid->Duracion);
+                    puts(encontrado->T.Descripcion);
+                    printf("duracion: %d \n",encontrado->T.Duracion);
                 }else
                 {
                     printf("la tarea no fue encontrada");
@@ -253,7 +222,6 @@ int main()
         
         
     }
-    */
     aux=listaPendientes;
     while (aux!=NULL)
     {
@@ -288,21 +256,19 @@ Nodo * BuscarTareaPorId(Nodo *lista, int y){
     
     return NULL;
 }
-/*
-Tarea * BuscarTareaPorPalabra(Tarea **x, char *y, int n){
+
+Nodo * BuscarTareaPorPalabra(Nodo *lista, char *y){
+    Nodo *auxl;
     char *aux;
-    for (int i = 0; i < n; i++)
+    auxl=lista;
+    while(auxl!=NULL)
     {
-        if (x[i]!=NULL)
+        aux=auxl->T.Descripcion;
+        if (strstr(aux, y) != NULL)
         {
-            aux=x[i]->Descripcion;
-            if (strstr(aux, y) != NULL)
-            {
-                return x[i];
-            }
-            
+            return auxl;
         }
+        auxl=auxl->Siguiente;  
     }
     return NULL;
 }
-*/
