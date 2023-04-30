@@ -21,7 +21,7 @@ void MostrarDatos(Nodo *lista);
 
 int main()
 {
-    int y, i=0;
+    int y, i=0, l=0;
     char buff[100], r;
     Nodo *listaPendientes, *listaRealizadas, *listaEnProgreso, *nuevo, *aux, *aux2, *encontrado;
     listaPendientes=NULL;
@@ -64,45 +64,249 @@ int main()
     printf("========================================\n");
     getchar();
     system("cls");
-    printf("=====listado de tareas pendientes===== \n");
-    printf("\n");
-    aux=listaPendientes;
-    while (aux!=NULL)
-    {
-        printf("Tarea %d \n", aux->T.TareaID);
-        printf("Descripcion: ");
-        puts(aux->T.Descripcion);
-        printf("Duracion: %d \n", aux->T.Duracion);
-        printf("\n");
-        aux=aux->Siguiente;
-    }
     
-    printf("=====listado de tareas realizadas===== \n");
-    printf("\n");
-    aux2=listaRealizadas;
-    while (aux2!=NULL)
+    do
     {
-        printf("Tarea %d \n", aux2->T.TareaID);
-        printf("Descripcion: ");
-        puts(aux2->T.Descripcion);
-        printf("Duracion: %d \n", aux2->T.Duracion);
+        printf("=====listado de tareas pendientes===== \n");
         printf("\n");
-        aux2=aux2->Siguiente;
-    }
-    printf("=====listado de tareas en progreso===== \n");
-    printf("\n");
-    aux2=listaEnProgreso;
-    while (aux2!=NULL)
-    {
-        printf("Tarea %d \n", aux2->T.TareaID);
-        printf("Descripcion: ");
-        puts(aux2->T.Descripcion);
-        printf("Duracion: %d \n", aux2->T.Duracion);
+        aux=listaPendientes;
+        while (aux!=NULL)
+        {
+            printf("Tarea %d \n", aux->T.TareaID);
+            printf("Descripcion: ");
+            puts(aux->T.Descripcion);
+            printf("Duracion: %d \n", aux->T.Duracion);
+            printf("\n");
+            aux=aux->Siguiente;
+        }
+        
+        printf("=====listado de tareas realizadas===== \n");
         printf("\n");
-        aux2=aux2->Siguiente;
-    }
-    getchar();
-    system("cls");
+        aux2=listaRealizadas;
+        while (aux2!=NULL)
+        {
+            printf("Tarea %d \n", aux2->T.TareaID);
+            printf("Descripcion: ");
+            puts(aux2->T.Descripcion);
+            printf("Duracion: %d \n", aux2->T.Duracion);
+            printf("\n");
+            aux2=aux2->Siguiente;
+        }
+        printf("=====listado de tareas en progreso===== \n");
+        printf("\n");
+        aux2=listaEnProgreso;
+        while (aux2!=NULL)
+        {
+            printf("Tarea %d \n", aux2->T.TareaID);
+            printf("Descripcion: ");
+            puts(aux2->T.Descripcion);
+            printf("Duracion: %d \n", aux2->T.Duracion);
+            printf("\n");
+            aux2=aux2->Siguiente;
+        }
+        printf("seleccione una de las tareas ingresando su id \n");
+        scanf("%d",&y);
+        fflush(stdin);
+        encontrado=BuscarTareaPorId(listaPendientes, y);
+        if (encontrado!=NULL)
+        {
+            printf("la tarea fue encontrada \n");
+            printf("Pertenece a la lista de tareas Pendientes \n");
+            l=1;
+            printf("Tarea %d: \n", encontrado->T.TareaID);
+            printf("descripcion: ");
+            puts(encontrado->T.Descripcion);
+            printf("duracion: %d \n",encontrado->T.Duracion);
+        }else
+        {
+            encontrado=BuscarTareaPorId(listaRealizadas, y);
+            if (encontrado!=NULL)
+            {
+                printf("la tarea fue encontrada \n");
+                printf("Pertenece a la lista de tareas Realizadas \n");
+                l=2;
+                printf("Tarea %d: \n", encontrado->T.TareaID);
+                printf("descripcion: ");
+                puts(encontrado->T.Descripcion);
+                printf("duracion: %d \n",encontrado->T.Duracion);
+            }else
+            {
+                encontrado=BuscarTareaPorId(listaEnProgreso, y);
+                if (encontrado!=NULL)
+                {
+                    printf("la tarea fue encontrada \n");
+                    printf("Pertenece a la lista de tareas en Progreso \n");
+                    l=3;
+                    printf("Tarea %d: \n", encontrado->T.TareaID);
+                    printf("descripcion: ");
+                    puts(encontrado->T.Descripcion);
+                    printf("duracion: %d \n",encontrado->T.Duracion);
+                }else{
+                    printf("la tarea no fue encontrada \n");
+                }
+            }
+        }
+        if (encontrado!=NULL)
+        {
+            switch (l)
+            {
+            case 1:
+                aux=listaPendientes;
+                break;
+            case 2:
+                aux=listaRealizadas;
+                break;
+            case 3:
+                aux=listaEnProgreso;
+                break;
+            default:
+                break;
+            }
+            printf("que desea realizar con esta tarea? \n");
+            printf("1. Mover \n");
+            printf("2. Eliminar \n");
+            printf("3. No Hacer Nada \n");
+            printf("ingrese el numero de la tarea que desea realizar (1, 2, 3) \n");
+            scanf("%d",&y);
+            fflush(stdin);
+            switch (y)
+            {
+            case 1:
+                printf("a que lista desea mover la tarea? \n");
+                printf("1. Lista de Tareas Pendientes \n");
+                printf("2. Lista de Tareas Realizadas \n");
+                printf("3. Lista de Tareas En Progreso \n");
+                printf("ingrese el numero de la lista destino \n");
+                scanf("%d", &l);
+                fflush(stdin);
+                switch (l)
+                {
+                case 1:
+                    if (aux!=listaPendientes)
+                    {
+                        i=0;
+                        do
+                        {
+                            if (aux==encontrado)
+                            {
+                                aux=encontrado->Siguiente;
+                                if (aux==listaRealizadas->Siguiente)
+                                {
+                                    listaRealizadas=aux;
+                                }else
+                                {
+                                    listaEnProgreso=aux;
+                                }
+                                i=1;
+                            }else
+                            {
+                                if (aux->Siguiente==encontrado)
+                                {
+                                    aux->Siguiente=encontrado->Siguiente;
+                                    i=1;
+                                }
+                                else
+                                {
+                                    aux=aux->Siguiente;
+                                }
+                            }
+                        } while (i!=1);
+                        nuevo=listaPendientes;
+                        listaPendientes=encontrado;
+                        listaPendientes->Siguiente=nuevo;
+                    }
+                    
+                    break;
+                case 2:
+                    if (aux!=listaRealizadas)
+                    {
+                        i=0;
+                        do
+                        {
+                            if (aux==encontrado)
+                            {
+                                aux=encontrado->Siguiente;
+                                if (aux==listaPendientes->Siguiente)
+                                {
+                                    listaPendientes=aux;
+                                }else
+                                {
+                                    listaEnProgreso=aux;
+                                }
+                                i=1;
+                            }else
+                            {
+                                if (aux->Siguiente==encontrado)
+                                {
+                                    aux->Siguiente=encontrado->Siguiente;
+                                    i=1;
+                                }
+                                else
+                                {
+                                    aux=aux->Siguiente;
+                                }
+                            }
+                        } while (i!=1);
+                        nuevo=listaRealizadas;
+                        listaRealizadas=encontrado;
+                        listaRealizadas->Siguiente=nuevo;
+                    }
+                    
+                    break;
+                case 3:
+                    if (aux!=listaEnProgreso)
+                    {
+                        i=0;
+                        do
+                        {
+                            if (aux==encontrado)
+                            {
+                                aux=encontrado->Siguiente;
+                                if (aux==listaRealizadas->Siguiente)
+                                {
+                                    listaRealizadas=aux;
+                                }else
+                                {
+                                    listaPendientes=aux;
+                                }
+                                i=1;
+                            }else
+                            {
+                                if (aux->Siguiente==encontrado)
+                                {
+                                    aux->Siguiente=encontrado->Siguiente;
+                                    i=1;
+                                }
+                                else
+                                {
+                                    aux=aux->Siguiente;
+                                }
+                            }
+                        } while (i!=1);
+                        nuevo=listaEnProgreso;
+                        listaEnProgreso=encontrado;
+                        listaEnProgreso->Siguiente=nuevo;
+                    }
+                    
+                    break;
+                
+                default:
+                printf("el numero ingresado no es valido, el movimiento fue cancelado \n");
+                    break;
+                }
+                break;
+            case 2:
+                
+                break;
+            default:
+                break;
+            }
+        }
+        printf("desea modificar otra tarea?(S/N) \n");
+        scanf("%c",&r);
+        fflush(stdin);
+    } while (r=='s'||r=='S');
+    
     /*
     aux=listaPendientes;
     aux2=listaRealizadas;
