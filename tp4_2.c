@@ -169,6 +169,8 @@ int main()
             printf("ingrese el numero de la tarea que desea realizar (1, 2, 3) \n");
             scanf("%d",&y);
             fflush(stdin);
+            getchar();
+            system("cls");
             switch (y)
             {
             case 1:
@@ -296,9 +298,49 @@ int main()
                 }
                 break;
             case 2:
-                
+                i=0;
+                do
+                {
+                    if (aux==encontrado)
+                    {
+                        aux=encontrado->Siguiente;
+                        if (aux==listaRealizadas->Siguiente)
+                        {
+                            listaRealizadas=aux;
+                        }else
+                        {
+                            if (aux==listaRealizadas->Siguiente)
+                            {
+                                listaRealizadas=aux;
+                            }else
+                            {
+                                listaEnProgreso=aux;
+                            }
+                        }
+                        i=1;
+                    }else
+                    {
+                        if (aux->Siguiente==encontrado)
+                        {
+                            aux->Siguiente=encontrado->Siguiente;
+                            i=1;
+                        }
+                        else
+                        {
+                            aux=aux->Siguiente;
+                        }
+                    }
+                } while (i!=1);
+                Eliminar(encontrado);
                 break;
             default:
+                if (y==3)
+                {
+                    printf("usted decidio no hacer nada, la tarea no sera modificada \n");
+                }else
+                {
+                    printf("el numero ingresado no es valido, se cancela esta operacion \n");
+                }
                 break;
             }
         }
@@ -306,7 +348,50 @@ int main()
         scanf("%c",&r);
         fflush(stdin);
     } while (r=='s'||r=='S');
-    
+    getchar();
+    system("cls");
+    printf("##### LISTADO FINAL DE TAREAS #####\n");
+    printf("=====listado de tareas pendientes===== \n");
+        printf("\n");
+        aux=listaPendientes;
+        while (aux!=NULL)
+        {
+            printf("Tarea %d \n", aux->T.TareaID);
+            printf("Descripcion: ");
+            puts(aux->T.Descripcion);
+            printf("Duracion: %d \n", aux->T.Duracion);
+            printf("\n");
+            aux=aux->Siguiente;
+        }
+        MostrarDatos(listaPendientes);
+        
+        printf("=====listado de tareas realizadas===== \n");
+        printf("\n");
+        aux2=listaRealizadas;
+        while (aux2!=NULL)
+        {
+            printf("Tarea %d \n", aux2->T.TareaID);
+            printf("Descripcion: ");
+            puts(aux2->T.Descripcion);
+            printf("Duracion: %d \n", aux2->T.Duracion);
+            printf("\n");
+            aux2=aux2->Siguiente;
+        }
+        MostrarDatos(listaRealizadas);
+
+        printf("=====listado de tareas en progreso===== \n");
+        printf("\n");
+        aux2=listaEnProgreso;
+        while (aux2!=NULL)
+        {
+            printf("Tarea %d \n", aux2->T.TareaID);
+            printf("Descripcion: ");
+            puts(aux2->T.Descripcion);
+            printf("Duracion: %d \n", aux2->T.Duracion);
+            printf("\n");
+            aux2=aux2->Siguiente;
+        }
+        MostrarDatos(listaEnProgreso);
     /*
     aux=listaPendientes;
     aux2=listaRealizadas;
@@ -484,7 +569,13 @@ int main()
         free(aux);
         aux=aux2;
     }
-    
+    aux=listaEnProgreso;
+    while (aux!=NULL)
+    {
+        aux2=aux->Siguiente;
+        free(aux);
+        aux=aux2;
+    }
     getchar();
     return 0;
 }
